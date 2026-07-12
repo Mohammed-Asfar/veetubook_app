@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local datasets used only to hand-curate the seed catalog — not shipped.
+# Large (16 MB) and not referenced by any code.
+BigBasket Products.csv
+*.csv
