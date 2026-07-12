@@ -631,6 +631,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get commonConfirm;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Your household grocery & spending book'**
+  String get appTagline;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardingBack;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String onboardStep(int current, int total);
+
+  /// No description provided for @onboard1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Build your list'**
+  String get onboard1Title;
+
+  /// No description provided for @onboard1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Add items from the ready-made catalog or create your own. Every product remembers its usual price.'**
+  String get onboard1Body;
+
+  /// No description provided for @onboard2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop & check off'**
+  String get onboard2Title;
+
+  /// No description provided for @onboard2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark items as bought while you shop. The line price is calculated automatically from the quantity — change it anytime.'**
+  String get onboard2Body;
+
+  /// No description provided for @onboard3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your spending'**
+  String get onboard3Title;
+
+  /// No description provided for @onboard3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought items add up into a monthly expense automatically. See how this month compares to the last.'**
+  String get onboard3Body;
+
+  /// No description provided for @onboard4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Tamil & English'**
+  String get onboard4Title;
+
+  /// No description provided for @onboard4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch the whole app between Tamil and English anytime in Settings. Works fully offline.'**
+  String get onboard4Body;
+
+  /// No description provided for @sectionHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get sectionHelp;
+
+  /// No description provided for @settingsHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get settingsHowItWorks;
+
+  /// No description provided for @settingsHowItWorksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'See the quick intro again.'**
+  String get settingsHowItWorksHint;
+
+  /// No description provided for @updateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updateTitle;
+
+  /// No description provided for @updateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available. You have {current}.'**
+  String updateMessage(String version, String current);
+
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get updateWhatsNew;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateNow;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @updateSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this version'**
+  String get updateSkip;
+
+  /// No description provided for @settingsCheckUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get settingsCheckUpdate;
+
+  /// No description provided for @settingsCheckUpdateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String settingsCheckUpdateHint(String version);
+
+  /// No description provided for @updateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re on the latest version'**
+  String get updateUpToDate;
 }
 
 class _AppLocalizationsDelegate

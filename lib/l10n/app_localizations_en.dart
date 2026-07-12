@@ -316,4 +316,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonConfirm => 'Confirm';
+
+  @override
+  String get appTagline => 'Your household grocery & spending book';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingBack => 'Back';
+
+  @override
+  String get onboardingGetStarted => 'Get started';
+
+  @override
+  String onboardStep(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get onboard1Title => 'Build your list';
+
+  @override
+  String get onboard1Body =>
+      'Add items from the ready-made catalog or create your own. Every product remembers its usual price.';
+
+  @override
+  String get onboard2Title => 'Shop & check off';
+
+  @override
+  String get onboard2Body =>
+      'Mark items as bought while you shop. The line price is calculated automatically from the quantity — change it anytime.';
+
+  @override
+  String get onboard3Title => 'Track your spending';
+
+  @override
+  String get onboard3Body =>
+      'Bought items add up into a monthly expense automatically. See how this month compares to the last.';
+
+  @override
+  String get onboard4Title => 'Tamil & English';
+
+  @override
+  String get onboard4Body =>
+      'Switch the whole app between Tamil and English anytime in Settings. Works fully offline.';
+
+  @override
+  String get sectionHelp => 'Help';
+
+  @override
+  String get settingsHowItWorks => 'How it works';
+
+  @override
+  String get settingsHowItWorksHint => 'See the quick intro again.';
+
+  @override
+  String get updateTitle => 'Update available';
+
+  @override
+  String updateMessage(String version, String current) {
+    return 'Version $version is available. You have $current.';
+  }
+
+  @override
+  String get updateWhatsNew => 'What\'s new';
+
+  @override
+  String get updateNow => 'Update';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateSkip => 'Skip this version';
+
+  @override
+  String get settingsCheckUpdate => 'Check for updates';
+
+  @override
+  String settingsCheckUpdateHint(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get updateUpToDate => 'You\'re on the latest version';
 }

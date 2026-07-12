@@ -320,4 +320,93 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get commonConfirm => 'உறுதிப்படுத்து';
+
+  @override
+  String get appTagline => 'உங்கள் வீட்டு மளிகை & செலவு புத்தகம்';
+
+  @override
+  String get onboardingSkip => 'தவிர்';
+
+  @override
+  String get onboardingNext => 'அடுத்து';
+
+  @override
+  String get onboardingBack => 'பின்';
+
+  @override
+  String get onboardingGetStarted => 'தொடங்கு';
+
+  @override
+  String onboardStep(int current, int total) {
+    return 'படி $current / $total';
+  }
+
+  @override
+  String get onboard1Title => 'பட்டியலை உருவாக்கு';
+
+  @override
+  String get onboard1Body =>
+      'தயாராக உள்ள பொருட்களிலிருந்து சேர்க்கவும் அல்லது உங்கள் சொந்தப் பொருட்களை உருவாக்கவும். ஒவ்வொரு பொருளும் அதன் வழக்கமான விலையை நினைவில் வைக்கும்.';
+
+  @override
+  String get onboard2Title => 'வாங்கி குறியிடு';
+
+  @override
+  String get onboard2Body =>
+      'ஷாப்பிங்கின் போது வாங்கிய பொருட்களைக் குறியிடவும். அளவைப் பொறுத்து விலை தானாகக் கணக்கிடப்படும் — எப்போது வேண்டுமானாலும் மாற்றலாம்.';
+
+  @override
+  String get onboard3Title => 'செலவைக் கண்காணி';
+
+  @override
+  String get onboard3Body =>
+      'வாங்கிய பொருட்கள் தானாகவே மாதாந்திர செலவாகச் சேரும். இந்த மாதம் முந்தைய மாதத்துடன் எப்படி ஒப்பிடுகிறது என்பதைப் பார்க்கவும்.';
+
+  @override
+  String get onboard4Title => 'தமிழ் & ஆங்கிலம்';
+
+  @override
+  String get onboard4Body =>
+      'அமைப்புகளில் எப்போது வேண்டுமானாலும் முழு ஆப்பையும் தமிழ் ⇄ ஆங்கிலம் மாற்றலாம். முழுவதும் ஆஃப்லைனில் இயங்கும்.';
+
+  @override
+  String get sectionHelp => 'உதவி';
+
+  @override
+  String get settingsHowItWorks => 'எப்படி வேலை செய்கிறது';
+
+  @override
+  String get settingsHowItWorksHint =>
+      'விரைவு அறிமுகத்தை மீண்டும் பார்க்கவும்.';
+
+  @override
+  String get updateTitle => 'புதுப்பிப்பு கிடைக்கிறது';
+
+  @override
+  String updateMessage(String version, String current) {
+    return 'பதிப்பு $version கிடைக்கிறது. உங்களிடம் $current உள்ளது.';
+  }
+
+  @override
+  String get updateWhatsNew => 'புதியவை';
+
+  @override
+  String get updateNow => 'புதுப்பி';
+
+  @override
+  String get updateLater => 'பின்னர்';
+
+  @override
+  String get updateSkip => 'இந்தப் பதிப்பைத் தவிர்';
+
+  @override
+  String get settingsCheckUpdate => 'புதுப்பிப்புகளைச் சரிபார்';
+
+  @override
+  String settingsCheckUpdateHint(String version) {
+    return 'பதிப்பு $version';
+  }
+
+  @override
+  String get updateUpToDate => 'நீங்கள் சமீபத்திய பதிப்பில் உள்ளீர்கள்';
 }

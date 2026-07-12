@@ -5,8 +5,13 @@ import '../../../core/di/service_locator.dart';
 import '../../../core/localization/app_language.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_theme_extension.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../onboarding/presentation/onboarding_page.dart';
+import '../../update/data/update_service.dart';
+import '../../update/presentation/update_dialog.dart';
 import '../data/data_management_service.dart';
 import '../domain/app_settings.dart';
 import 'settings_cubit.dart';
@@ -71,9 +76,58 @@ class SettingsScreen extends StatelessWidget {
               subtitle: Text(l10n.settingsClearDataHint),
               onTap: () => _clearData(context),
             ),
+            const Divider(),
+            _SectionHeader(l10n.sectionHelp),
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: Text(l10n.settingsHowItWorks),
+              subtitle: Text(l10n.settingsHowItWorksHint),
+              onTap: () => _showOnboarding(context),
+            ),
+            ListTile(
+              leading: const Icon(Icons.system_update),
+              title: Text(l10n.settingsCheckUpdate),
+              subtitle: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snap) => Text(
+                  l10n.settingsCheckUpdateHint(snap.data?.version ?? '—'),
+                ),
+              ),
+              onTap: () => _checkUpdate(context),
+            ),
           ],
         );
       },
+    );
+  }
+
+  Future<void> _checkUpdate(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final service = sl<UpdateService>();
+    final release = await service.checkForUpdate();
+    if (!context.mounted) return;
+
+    if (release == null) {
+      messenger.showSnackBar(SnackBar(content: Text(l10n.updateUpToDate)));
+      return;
+    }
+    final info = await PackageInfo.fromPlatform();
+    if (!context.mounted) return;
+    await UpdateDialog.show(
+      context,
+      release: release,
+      currentVersion: info.version,
+      service: service,
+    );
+  }
+
+  void _showOnboarding(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (ctx) => OnboardingPage(onDone: () => Navigator.of(ctx).pop()),
+      ),
     );
   }
 

@@ -147,5 +147,57 @@
   "commonSave": "Save",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
-  "commonConfirm": "Confirm"
+  "commonConfirm": "Confirm",
+
+  "appTagline": "Your household grocery & spending book",
+
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingBack": "Back",
+  "onboardingGetStarted": "Get started",
+
+  "onboardStep": "Step {current} of {total}",
+  "@onboardStep": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+
+  "onboard1Title": "Build your list",
+  "onboard1Body": "Add items from the ready-made catalog or create your own. Every product remembers its usual price.",
+
+  "onboard2Title": "Shop & check off",
+  "onboard2Body": "Mark items as bought while you shop. The line price is calculated automatically from the quantity — change it anytime.",
+
+  "onboard3Title": "Track your spending",
+  "onboard3Body": "Bought items add up into a monthly expense automatically. See how this month compares to the last.",
+
+  "onboard4Title": "Tamil & English",
+  "onboard4Body": "Switch the whole app between Tamil and English anytime in Settings. Works fully offline.",
+
+  "sectionHelp": "Help",
+  "settingsHowItWorks": "How it works",
+  "settingsHowItWorksHint": "See the quick intro again.",
+
+  "updateTitle": "Update available",
+  "updateMessage": "Version {version} is available. You have {current}.",
+  "@updateMessage": {
+    "placeholders": {
+      "version": { "type": "String" },
+      "current": { "type": "String" }
+    }
+  },
+  "updateWhatsNew": "What's new",
+  "updateNow": "Update",
+  "updateLater": "Later",
+  "updateSkip": "Skip this version",
+  "settingsCheckUpdate": "Check for updates",
+  "settingsCheckUpdateHint": "Version {version}",
+  "@settingsCheckUpdateHint": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "updateUpToDate": "You're on the latest version"
 }

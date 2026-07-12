@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'core/di/service_locator.dart';
 import 'core/widgets/widgets.dart';
+import 'features/update/data/update_service.dart';
+import 'features/update/presentation/update_dialog.dart';
 import 'features/catalog/domain/catalog_repository.dart';
 import 'features/catalog/presentation/catalog_screen.dart';
 import 'features/catalog/presentation/cubit/catalog_cubit.dart';
@@ -30,6 +33,29 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check GitHub Releases once, after the shell is on screen. Fully silent on
+    // failure / when already up to date — never blocks launch.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkForUpdate());
+  }
+
+  Future<void> _checkForUpdate() async {
+    final service = sl<UpdateService>();
+    final release = await service.checkForUpdate();
+    if (release == null || !mounted) return;
+
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    await UpdateDialog.show(
+      context,
+      release: release,
+      currentVersion: info.version,
+      service: service,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

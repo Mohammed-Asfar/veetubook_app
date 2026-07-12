@@ -11,7 +11,10 @@ import '../../features/expenses/domain/expenses_repository.dart';
 import '../../features/lists/data/lists_dao.dart';
 import '../../features/lists/data/lists_repository_impl.dart';
 import '../../features/lists/domain/lists_repository.dart';
+import '../../features/onboarding/data/onboarding_store.dart';
 import '../../features/settings/data/data_management_service.dart';
+import '../../features/update/data/update_service.dart';
+import '../constants/app_constants.dart';
 import '../../features/settings/data/prefs_settings_store.dart';
 import '../../features/settings/domain/app_settings.dart';
 import '../db/app_database.dart';
@@ -60,6 +63,14 @@ Future<void> setupServiceLocator({
   // ---- Settings feature ----
   final prefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SettingsStore>(() => PrefsSettingsStore(prefs));
+  sl.registerLazySingleton<OnboardingStore>(() => OnboardingStore(prefs));
+  sl.registerLazySingleton<UpdateService>(
+    () => UpdateService(
+      prefs: prefs,
+      owner: AppConstants.githubOwner,
+      repo: AppConstants.githubRepo,
+    ),
+  );
   sl.registerLazySingleton<DataManagementService>(
     () => DataManagementService(sl<AppDatabase>(), sl<ExpensesRepository>()),
   );

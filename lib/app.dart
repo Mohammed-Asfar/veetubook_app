@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/theme/app_theme.dart';
+import 'features/onboarding/presentation/splash_page.dart';
 import 'features/settings/domain/app_settings.dart';
 import 'features/settings/presentation/settings_cubit.dart';
-import 'home_shell.dart';
 import 'l10n/app_localizations.dart';
 
 /// Root widget: hosts the [SettingsCubit] (created with persisted settings) and
@@ -30,7 +30,7 @@ class VeetubookApp extends StatelessWidget {
             locale: settings.language.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: const HomeShell(),
+            home: const SplashPage(),
           );
         },
       ),
