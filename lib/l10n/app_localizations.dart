@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Rename list'**
   String get renameList;
 
+  /// No description provided for @changeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change date'**
+  String get changeDate;
+
   /// No description provided for @deleteListConfirm.
   ///
   /// In en, this message translates to:
@@ -416,11 +422,47 @@ abstract class AppLocalizations {
   /// **'No expenses yet. Finish a shopping trip to see it here.'**
   String get expensesEmpty;
 
+  /// No description provided for @expenseItemsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Items bought'**
+  String get expenseItemsTitle;
+
+  /// No description provided for @expenseReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This is a past record and can\'t be edited.'**
+  String get expenseReadOnly;
+
   /// No description provided for @monthlySpend.
   ///
   /// In en, this message translates to:
   /// **'Monthly spend'**
   String get monthlySpend;
+
+  /// No description provided for @dailySpendThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly spend this month'**
+  String get dailySpendThisMonth;
+
+  /// No description provided for @trendingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending up by {pct}% this month'**
+  String trendingUp(String pct);
+
+  /// No description provided for @trendingDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending down by {pct}% this month'**
+  String trendingDown(String pct);
+
+  /// No description provided for @showingLastMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing total spend for the last {count} months'**
+  String showingLastMonths(int count);
 
   /// No description provided for @vsPreviousMonth.
   ///

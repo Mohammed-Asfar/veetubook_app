@@ -1,3 +1,4 @@
+import '../../../core/utils/month_utils.dart';
 import 'entities/expense.dart';
 import 'entities/monthly_summary.dart';
 
@@ -14,4 +15,8 @@ abstract interface class ExpensesRepository {
 
   /// Monthly totals bucketed by local month, most recent first (for M4).
   Stream<List<MonthlySummary>> watchMonthlySummaries();
+
+  /// Per-day spend (paise) for every day of [month], indexed by day-of-month
+  /// (1..daysInMonth). Days with no spend are 0. Used by the daily chart.
+  Stream<List<int>> watchDailyTotals(YearMonth month);
 }

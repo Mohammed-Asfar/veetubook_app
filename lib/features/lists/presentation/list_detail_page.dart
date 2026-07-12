@@ -20,6 +20,20 @@ import '../domain/entities/grocery_list.dart';
 import '../domain/entities/list_item.dart';
 import 'cubit/list_detail_cubit.dart';
 
+/// Indexes list items by their catalog product id so the add-item sheet can do
+/// an O(1) "is this product already on the list?" lookup per row instead of
+/// scanning every item for each of the (potentially hundreds of) products.
+/// Ad-hoc items (no productId) are skipped; on the rare duplicate, the first
+/// item wins — matching the previous `.first` behaviour.
+Map<int, ListItem> _itemsByProduct(List<ListItem> items) {
+  final map = <int, ListItem>{};
+  for (final it in items) {
+    final pid = it.productId;
+    if (pid != null) map.putIfAbsent(pid, () => it);
+  }
+  return map;
+}
+
 /// Shopping-mode screen: list items with check-off, quantity, per-line price,
 /// and a running total. The parent [ListDetailCubit] must be provided above.
 class ListDetailPage extends StatelessWidget {
@@ -674,20 +688,23 @@ class _ProductAddList extends StatelessWidget {
         // Rows reflect current list items so the add/added state stays live.
         return BlocBuilder<ListDetailCubit, ListDetailState>(
           builder: (context, state) {
+            // Build a productId -> item lookup once per rebuild so each row is
+            // an O(1) map read instead of an O(items) scan (matters with a
+            // large catalog).
+            final byProduct = _itemsByProduct(state.items);
             return ListView.separated(
               itemCount: filtered.length,
               separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, i) {
                 final p = filtered[i];
-                final existing =
-                    state.items.where((it) => it.productId == p.id).toList();
+                final existing = byProduct[p.id];
                 return _ProductAddRow(
                   product: p,
-                  existing: existing.isEmpty ? null : existing.first,
+                  existing: existing,
                   onAdd: () => detailCubit.addFromProduct(p, Decimal.one),
-                  onRemove: existing.isEmpty
+                  onRemove: existing == null
                       ? null
-                      : () => detailCubit.removeItem(existing.first),
+                      : () => detailCubit.removeItem(existing),
                 );
               },
             );
@@ -736,6 +753,8 @@ class _AllTab extends StatelessWidget {
 
         return BlocBuilder<ListDetailCubit, ListDetailState>(
           builder: (context, state) {
+            // O(1) per-row lookup instead of scanning items for every product.
+            final byProduct = _itemsByProduct(state.items);
             return Column(
               children: [
                 if (exactExists) _AlreadyExistsBanner(name: query.trim()),
@@ -752,17 +771,15 @@ class _AllTab extends StatelessWidget {
                         );
                       }
                       final p = filtered[i - (canCreate ? 1 : 0)];
-                      final existing = state.items
-                          .where((it) => it.productId == p.id)
-                          .toList();
+                      final existing = byProduct[p.id];
                       return _ProductAddRow(
                         product: p,
-                        existing: existing.isEmpty ? null : existing.first,
+                        existing: existing,
                         onAdd: () =>
                             detailCubit.addFromProduct(p, Decimal.one),
-                        onRemove: existing.isEmpty
+                        onRemove: existing == null
                             ? null
-                            : () => detailCubit.removeItem(existing.first),
+                            : () => detailCubit.removeItem(existing),
                       );
                     },
                   ),

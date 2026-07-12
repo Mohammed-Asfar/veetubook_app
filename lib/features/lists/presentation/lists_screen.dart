@@ -216,6 +216,17 @@ class _ListTile extends StatelessWidget {
             if (name != null && name.isNotEmpty) {
               await cubit.renameList(list.id!, name);
             }
+          } else if (value == 'date') {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: list.createdAt.toLocal(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime.now(),
+              helpText: l10n.changeDate,
+            );
+            if (picked != null) {
+              await cubit.setListDate(list.id!, picked);
+            }
           } else if (value == 'delete') {
             final ok = await showConfirmDialog(
               context,
@@ -228,6 +239,7 @@ class _ListTile extends StatelessWidget {
         },
         itemBuilder: (context) => [
           PopupMenuItem(value: 'rename', child: Text(l10n.renameList)),
+          PopupMenuItem(value: 'date', child: Text(l10n.changeDate)),
           PopupMenuItem(value: 'delete', child: Text(l10n.commonDelete)),
         ],
       ),

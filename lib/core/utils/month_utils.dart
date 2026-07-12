@@ -27,6 +27,9 @@ class YearMonth implements Comparable<YearMonth> {
   DateTime get endExclusive =>
       month == 12 ? DateTime(year + 1, 1, 1) : DateTime(year, month + 1, 1);
 
+  /// Number of days in this month (handles February / leap years).
+  int get daysInMonth => endExclusive.subtract(const Duration(days: 1)).day;
+
   String label({String locale = 'en_IN'}) =>
       DateFormat.yMMM(locale).format(start);
 

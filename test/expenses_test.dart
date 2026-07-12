@@ -5,6 +5,7 @@ import 'package:decimal/decimal.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:veetubook/core/db/app_database.dart' hide ListItem, Expense;
+import 'package:veetubook/core/utils/month_utils.dart';
 import 'package:veetubook/features/expenses/data/expenses_dao.dart';
 import 'package:veetubook/features/expenses/data/expenses_repository_impl.dart';
 import 'package:veetubook/features/lists/data/lists_dao.dart';
@@ -96,5 +97,39 @@ void main() {
     expect(months.length, 1); // both in the current month
     expect(months.single.tripCount, 2);
     expect(months.single.totalPaise, 20000); // ₹100 + ₹100
+  });
+
+  test('backdating a list moves its expense to the correct month', () async {
+    final (listId, boughtId) = await seedList();
+    await lists.setBought(boughtId, true);
+    await expenses.syncExpenseForList(listId);
+
+    // The expense should carry the list's date, not "now".
+    final backDate = DateTime.utc(2026, 1, 15); // a forgotten January trip
+    await lists.setListDate(listId, backDate);
+    await expenses.syncExpenseForList(listId);
+
+    final rows = await expenses.watchExpenses().first;
+    expect(rows.single.date.toUtc(), backDate);
+
+    // And it buckets into that month, not the current one.
+    final months = await expenses.watchMonthlySummaries().first;
+    expect(months.single.month.year, 2026);
+    expect(months.single.month.month, 1);
+  });
+
+  test('watchDailyTotals returns one slot per day with spend on the right day',
+      () async {
+    final (listId, boughtId) = await seedList();
+    await lists.setBought(boughtId, true);
+    // Date the trip to the 15th of January 2026 (31-day month).
+    await lists.setListDate(listId, DateTime.utc(2026, 1, 15, 10));
+    await expenses.syncExpenseForList(listId);
+
+    final daily =
+        await expenses.watchDailyTotals(const YearMonth(2026, 1)).first;
+    expect(daily.length, 31); // one slot per day of January
+    expect(daily[14], 10000); // day 15 (index 14) has the ₹100 spend
+    expect(daily.where((p) => p > 0).length, 1); // only that day
   });
 }

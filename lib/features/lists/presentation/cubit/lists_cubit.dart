@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../expenses/domain/expenses_repository.dart';
 import '../../domain/entities/grocery_list.dart';
 import '../../domain/lists_repository.dart';
 
@@ -21,13 +22,14 @@ class ListsState extends Equatable {
 
 /// Watches all grocery lists and exposes create/rename/delete operations.
 class ListsCubit extends Cubit<ListsState> {
-  ListsCubit(this._repo) : super(const ListsState()) {
+  ListsCubit(this._repo, this._expenses) : super(const ListsState()) {
     _sub = _repo.watchLists().listen(
           (lists) => emit(ListsState(loading: false, lists: lists)),
         );
   }
 
   final ListsRepository _repo;
+  final ExpensesRepository _expenses;
   StreamSubscription<List<GroceryList>>? _sub;
 
   /// Create a list; returns it with the final (uniqued) title and id.
@@ -35,6 +37,13 @@ class ListsCubit extends Cubit<ListsState> {
   Future<void> renameList(int id, String title) =>
       _repo.renameList(id, title);
   Future<void> deleteList(int id) => _repo.deleteList(id);
+
+  /// Backdate (or forward-date) a list. Re-syncs its expense so the spend moves
+  /// to the correct month immediately.
+  Future<void> setListDate(int id, DateTime date) async {
+    await _repo.setListDate(id, date);
+    await _expenses.syncExpenseForList(id);
+  }
 
   /// A suggested unique auto-generated name (e.g. "List 3 - 11 Jul").
   Future<String> suggestName(String baseName, String datePart) =>

@@ -17,6 +17,7 @@
   "searchLists": "Search lists",
   "listsNoMatch": "No lists match your search.",
   "renameList": "Rename list",
+  "changeDate": "Change date",
   "deleteListConfirm": "Delete this list and its items?",
   "listItemsEmpty": "No items yet. Add products from your catalog or a one-off item.",
   "addFromCatalog": "Add items",
@@ -84,7 +85,28 @@
 
   "expensesTitle": "Expenses",
   "expensesEmpty": "No expenses yet. Finish a shopping trip to see it here.",
+  "expenseItemsTitle": "Items bought",
+  "expenseReadOnly": "This is a past record and can't be edited.",
   "monthlySpend": "Monthly spend",
+  "dailySpendThisMonth": "Weekly spend this month",
+  "trendingUp": "Trending up by {pct}% this month",
+  "@trendingUp": {
+    "placeholders": {
+      "pct": { "type": "String" }
+    }
+  },
+  "trendingDown": "Trending down by {pct}% this month",
+  "@trendingDown": {
+    "placeholders": {
+      "pct": { "type": "String" }
+    }
+  },
+  "showingLastMonths": "Showing total spend for the last {count} months",
+  "@showingLastMonths": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "vsPreviousMonth": "vs previous month",
   "noPriorData": "No prior month to compare",
   "soFarThisMonth": "so far this month",

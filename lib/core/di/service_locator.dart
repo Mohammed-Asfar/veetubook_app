@@ -65,5 +65,7 @@ Future<void> setupServiceLocator({
   );
 
   // Seed a starter catalog on first launch (no-op if already populated).
-  if (seed) await CatalogSeeder(sl<CatalogRepository>()).seedIfEmpty();
+  if (seed) {
+    await CatalogSeeder(sl<CatalogRepository>(), sl<CatalogDao>()).seedIfEmpty();
+  }
 }

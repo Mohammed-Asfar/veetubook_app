@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/di/service_locator.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/theme/app_theme_extension.dart';
 import '../../../core/utils/month_utils.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/entities/expense.dart';
+import '../domain/expenses_repository.dart';
 import 'cubit/expenses_cubit.dart';
+import 'expense_detail_page.dart';
+import 'widgets/daily_spend_chart.dart';
 import 'widgets/month_comparison_card.dart';
 import 'widgets/monthly_spend_chart.dart';
 
@@ -50,11 +53,11 @@ class ExpensesScreen extends StatelessWidget {
               currentMonth: currentMonth,
             ),
             MonthlySpendChart(months: state.months),
+            _DailyChartSection(month: currentMonth),
             for (final summary in state.months) ...[
               _MonthHeader(
                 label: summary.month.label(),
                 totalPaise: summary.totalPaise,
-                tripCount: summary.tripCount,
               ),
               for (final e in byMonth[summary.month] ?? const <Expense>[])
                 _ExpenseTile(expense: e),
@@ -70,16 +73,13 @@ class _MonthHeader extends StatelessWidget {
   const _MonthHeader({
     required this.label,
     required this.totalPaise,
-    required this.tripCount,
   });
 
   final String label;
   final int totalPaise;
-  final int tripCount;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return Container(
       color: theme.colorScheme.surface,
@@ -90,15 +90,9 @@ class _MonthHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: theme.textTheme.titleMedium),
-                Text(l10n.trips(tripCount), style: theme.textTheme.bodySmall),
-              ],
-            ),
+            child: Text(label, style: theme.textTheme.titleMedium),
           ),
-          PriceText(totalPaise, color: context.appColors.priceUp),
+          PriceText(totalPaise, color: theme.colorScheme.primary),
         ],
       ),
     );
@@ -117,6 +111,33 @@ class _ExpenseTile extends StatelessWidget {
       title: Text(expense.listTitle ?? ''),
       subtitle: Text(DateFormat.yMMMd('en_IN').format(expense.date.toLocal())),
       trailing: PriceText(expense.totalPaise),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ExpenseDetailPage(expense: expense),
+        ),
+      ),
+    );
+  }
+}
+
+/// Weekly-spend chart card for [month]. The chart card owns its own title.
+class _DailyChartSection extends StatelessWidget {
+  const _DailyChartSection({required this.month});
+
+  final YearMonth month;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<int>>(
+      stream: sl<ExpensesRepository>().watchDailyTotals(month),
+      builder: (context, snapshot) {
+        final daily = snapshot.data;
+        // Hide the section entirely until there's any spend this month.
+        if (daily == null || daily.every((p) => p == 0)) {
+          return const SizedBox.shrink();
+        }
+        return DailySpendChart(month: month, dailyPaise: daily);
+      },
     );
   }
 }

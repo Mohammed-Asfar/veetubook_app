@@ -49,6 +49,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get renameList => 'பட்டியலை மறுபெயரிடு';
 
   @override
+  String get changeDate => 'தேதியை மாற்று';
+
+  @override
   String get deleteListConfirm =>
       'இந்தப் பட்டியலையும் அதன் பொருட்களையும் அழிக்கவா?';
 
@@ -186,7 +189,31 @@ class AppLocalizationsTa extends AppLocalizations {
       'இன்னும் செலவுகள் இல்லை. ஒரு ஷாப்பிங்கை முடித்தால் இங்கே தெரியும்.';
 
   @override
+  String get expenseItemsTitle => 'வாங்கிய பொருட்கள்';
+
+  @override
+  String get expenseReadOnly => 'இது ஒரு பழைய பதிவு, இதைத் திருத்த முடியாது.';
+
+  @override
   String get monthlySpend => 'மாதாந்திர செலவு';
+
+  @override
+  String get dailySpendThisMonth => 'இந்த மாத வாராந்திர செலவு';
+
+  @override
+  String trendingUp(String pct) {
+    return 'இந்த மாதம் $pct% அதிகரித்துள்ளது';
+  }
+
+  @override
+  String trendingDown(String pct) {
+    return 'இந்த மாதம் $pct% குறைந்துள்ளது';
+  }
+
+  @override
+  String showingLastMonths(int count) {
+    return 'கடந்த $count மாதங்களின் மொத்த செலவு';
+  }
 
   @override
   String get vsPreviousMonth => 'முந்தைய மாதத்துடன் ஒப்பிடும்போது';

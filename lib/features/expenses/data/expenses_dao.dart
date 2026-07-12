@@ -66,10 +66,17 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase>
         return;
       }
 
+      // The expense is dated by the LIST's date, not "now", so backdating a
+      // list (a forgotten past trip) moves its spend into the right month.
+      final list = await (select(groceryLists)
+            ..where((l) => l.id.equals(listId)))
+          .getSingleOrNull();
+      final expenseDate = list?.createdAt ?? now;
+
       if (existing != null) {
         await (update(expenses)..where((e) => e.id.equals(existing.id))).write(
           ExpensesCompanion(
-            date: Value(now),
+            date: Value(expenseDate),
             totalPaise: Value(total),
             updatedAt: Value(now),
           ),
@@ -78,7 +85,7 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase>
         await into(expenses).insert(
           ExpensesCompanion.insert(
             listId: listId,
-            date: now,
+            date: expenseDate,
             totalPaise: Value(total),
             updatedAt: Value(now),
           ),

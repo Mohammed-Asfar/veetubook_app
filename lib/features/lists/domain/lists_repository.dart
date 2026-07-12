@@ -15,6 +15,11 @@ abstract interface class ListsRepository {
 
   /// Rename a list, keeping the title unique among the other lists.
   Future<void> renameList(int id, String title);
+
+  /// Set a list's date (its `createdAt`). Used to backdate a forgotten trip so
+  /// its expense falls in the correct month. Store a UTC timestamp.
+  Future<void> setListDate(int id, DateTime date);
+
   Future<void> deleteList(int id);
 
   /// A suggested unique name for a new list, e.g. "List 3 - 11 Jul".

@@ -37,8 +37,8 @@ class CatalogRepositoryImpl implements CatalogRepository {
   Future<Product?> findByName(String name) async {
     final needle = name.trim().toLowerCase();
     if (needle.isEmpty) return null;
-    // Small catalog: scan the current products and compare case-insensitively.
-    final products = await watchProducts().first;
+    // One-shot fetch (no stream subscription) then compare case-insensitively.
+    final products = (await _dao.getAllProducts()).map(_toProduct);
     for (final p in products) {
       if ((p.nameEn ?? '').trim().toLowerCase() == needle ||
           (p.nameTa ?? '').trim().toLowerCase() == needle) {

@@ -41,7 +41,8 @@ class _HomeShellState extends State<HomeShell> {
           create: (_) => CatalogCubit(sl<CatalogRepository>()),
         ),
         BlocProvider<ListsCubit>(
-          create: (_) => ListsCubit(sl<ListsRepository>()),
+          create: (_) =>
+              ListsCubit(sl<ListsRepository>(), sl<ExpensesRepository>()),
         ),
         BlocProvider<ExpensesCubit>(
           create: (_) => ExpensesCubit(sl<ExpensesRepository>()),

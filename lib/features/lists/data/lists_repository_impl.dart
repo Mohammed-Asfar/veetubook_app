@@ -66,6 +66,10 @@ class ListsRepositoryImpl implements ListsRepository {
   }
 
   @override
+  Future<void> setListDate(int id, DateTime date) =>
+      _dao.updateListDate(id, date.toUtc());
+
+  @override
   Future<void> deleteList(int id) => _dao.deleteListById(id);
 
   @override

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/utils/money.dart';
 import '../../../../core/utils/month_utils.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/monthly_summary.dart';
+import 'chart_card.dart';
 
-/// A simple bar chart of monthly spend for the last few months, oldest -> newest
-/// left to right, with the most recent month highlighted.
+/// Bar chart of monthly spend for the last few months, oldest -> newest left to
+/// right, with the most recent month highlighted — in a titled chart card.
 class MonthlySpendChart extends StatelessWidget {
   const MonthlySpendChart({
     super.key,
@@ -23,26 +25,55 @@ class MonthlySpendChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (months.isEmpty) return const SizedBox.shrink();
 
+    final l10n = AppLocalizations.of(context);
     // Take the most recent [maxMonths] and reverse to chronological order.
     final data = months.take(maxMonths).toList().reversed.toList();
     final theme = Theme.of(context);
     final maxPaise = data.fold<int>(0, (m, s) => s.totalPaise > m ? s.totalPaise : m);
     final maxY = maxPaise == 0 ? 1.0 : maxPaise * 1.2;
+    final gridColor = theme.colorScheme.onSurface.withValues(alpha: 0.08);
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        0,
-        AppSpacing.lg,
-        AppSpacing.lg,
-      ),
+    // Trend caption from the latest two months.
+    String? caption;
+    IconData? captionIcon;
+    if (data.length >= 2) {
+      final prev = data[data.length - 2].totalPaise;
+      final curr = data.last.totalPaise;
+      if (prev > 0) {
+        final pct = (curr - prev) / prev * 100;
+        final up = pct > 0;
+        caption = up
+            ? l10n.trendingUp(pct.abs().toStringAsFixed(1))
+            : l10n.trendingDown(pct.abs().toStringAsFixed(1));
+        captionIcon = up ? Icons.trending_up : Icons.trending_down;
+      }
+    }
+
+    final subtitle = data.length >= 2
+        ? '${data.first.month.label()} – ${data.last.month.label()}'
+        : data.first.month.label();
+
+    return ChartCard(
+      title: l10n.monthlySpend,
+      subtitle: subtitle,
+      caption: caption,
+      captionIcon: captionIcon,
+      footnote: l10n.showingLastMonths(data.length),
       child: SizedBox(
-        height: 200,
+        height: 180,
         child: BarChart(
           BarChartData(
             maxY: maxY,
-            alignment: BarChartAlignment.spaceAround,
-            gridData: const FlGridData(show: false),
+            // Center the bars with a fixed gap so a few months don't get
+            // spread across the whole width.
+            alignment: BarChartAlignment.center,
+            groupsSpace: AppSpacing.xl,
+            gridData: FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (_) =>
+                  FlLine(color: gridColor, strokeWidth: 1),
+            ),
             borderData: FlBorderData(show: false),
             titlesData: FlTitlesData(
               show: true,
@@ -72,10 +103,31 @@ class MonthlySpendChart extends StatelessWidget {
             ),
             barTouchData: BarTouchData(
               touchTooltipData: BarTouchTooltipData(
+                getTooltipColor: (_) => theme.colorScheme.surface,
+                tooltipBorder: BorderSide(
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.12),
+                ),
+                tooltipBorderRadius:
+                    BorderRadius.circular(AppSpacing.radiusSm),
+                tooltipPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
+                ),
                 getTooltipItem: (group, groupIndex, rod, rodIndex) =>
                     BarTooltipItem(
-                  Money.format(data[groupIndex].totalPaise),
-                  theme.textTheme.bodySmall!,
+                  '${data[groupIndex].month.label()}\n',
+                  theme.textTheme.bodySmall!.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: Money.format(data[groupIndex].totalPaise),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -87,10 +139,8 @@ class MonthlySpendChart extends StatelessWidget {
                     BarChartRodData(
                       toY: data[i].totalPaise.toDouble(),
                       width: 18,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(AppSpacing.xs),
-                        topRight: Radius.circular(AppSpacing.xs),
-                      ),
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radiusSm),
                       color: i == data.length - 1
                           ? theme.colorScheme.primary
                           : theme.colorScheme.primary.withValues(alpha: 0.4),

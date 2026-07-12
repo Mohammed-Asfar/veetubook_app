@@ -49,6 +49,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get renameList => 'Rename list';
 
   @override
+  String get changeDate => 'Change date';
+
+  @override
   String get deleteListConfirm => 'Delete this list and its items?';
 
   @override
@@ -182,7 +185,31 @@ class AppLocalizationsEn extends AppLocalizations {
       'No expenses yet. Finish a shopping trip to see it here.';
 
   @override
+  String get expenseItemsTitle => 'Items bought';
+
+  @override
+  String get expenseReadOnly => 'This is a past record and can\'t be edited.';
+
+  @override
   String get monthlySpend => 'Monthly spend';
+
+  @override
+  String get dailySpendThisMonth => 'Weekly spend this month';
+
+  @override
+  String trendingUp(String pct) {
+    return 'Trending up by $pct% this month';
+  }
+
+  @override
+  String trendingDown(String pct) {
+    return 'Trending down by $pct% this month';
+  }
+
+  @override
+  String showingLastMonths(int count) {
+    return 'Showing total spend for the last $count months';
+  }
 
   @override
   String get vsPreviousMonth => 'vs previous month';

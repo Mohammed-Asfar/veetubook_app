@@ -50,4 +50,19 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
       return summaries;
     });
   }
+
+  @override
+  Stream<List<int>> watchDailyTotals(YearMonth month) {
+    return watchExpenses().map((expenses) {
+      // One slot per day of the month (index 0 = day 1), all starting at 0.
+      final totals = List<int>.filled(month.daysInMonth, 0);
+      for (final e in expenses) {
+        final local = e.date.toLocal();
+        if (local.year == month.year && local.month == month.month) {
+          totals[local.day - 1] += e.totalPaise;
+        }
+      }
+      return totals;
+    });
+  }
 }

@@ -27,6 +27,11 @@ class ListsDao extends DatabaseAccessor<AppDatabase> with _$ListsDaoMixin {
         .write(GroceryListsCompanion(title: Value(title)));
   }
 
+  Future<void> updateListDate(int id, DateTime date) {
+    return (update(groceryLists)..where((l) => l.id.equals(id)))
+        .write(GroceryListsCompanion(createdAt: Value(date)));
+  }
+
   Future<void> deleteListById(int id) =>
       (delete(groceryLists)..where((l) => l.id.equals(id))).go();
 

@@ -26,14 +26,30 @@ void main() {
 
   tearDown(() async => db.close());
 
-  test('seeder populates the catalog only when empty', () async {
+  test('seeder populates a rich catalog with categories only when empty',
+      () async {
     expect(await repo.productCount(), 0);
-    await CatalogSeeder(repo).seedIfEmpty();
+    await CatalogSeeder(repo, CatalogDao(db)).seedIfEmpty();
     final count = await repo.productCount();
-    expect(count, greaterThan(30));
+    expect(count, greaterThan(200)); // large Indian catalog
+
+    // Categories are seeded too (Vegetables, Non-Veg, Ready-to-Cook, ...).
+    final categories = await repo.watchCategories().first;
+    final names = categories.map((c) => c.nameEn).toList();
+    expect(
+      names,
+      containsAll([
+        'Vegetables',
+        'Non-Veg',
+        'Fruits',
+        'Snacks',
+        'Ready-to-Cook',
+        'Household',
+      ]),
+    );
 
     // Running again is a no-op.
-    await CatalogSeeder(repo).seedIfEmpty();
+    await CatalogSeeder(repo, CatalogDao(db)).seedIfEmpty();
     expect(await repo.productCount(), count);
   });
 
