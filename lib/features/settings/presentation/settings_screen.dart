@@ -1,0 +1,114 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/di/service_locator.dart';
+import '../../../core/localization/app_language.dart';
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_theme_extension.dart';
+import '../../../core/widgets/widgets.dart';
+import '../../../l10n/app_localizations.dart';
+import '../data/data_management_service.dart';
+import '../domain/app_settings.dart';
+import 'settings_cubit.dart';
+
+/// The Settings tab: language, currency, and data management (export / clear).
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return BlocBuilder<SettingsCubit, AppSettings>(
+      builder: (context, settings) {
+        return ListView(
+          children: [
+            _SectionHeader(l10n.settingsLanguage),
+            RadioGroup<AppLanguage>(
+              groupValue: settings.language,
+              onChanged: (lang) {
+                if (lang != null) {
+                  context.read<SettingsCubit>().setLanguage(lang);
+                }
+              },
+              child: Column(
+                children: [
+                  RadioListTile<AppLanguage>(
+                    value: AppLanguage.english,
+                    title: Text(l10n.languageEnglish),
+                  ),
+                  RadioListTile<AppLanguage>(
+                    value: AppLanguage.tamil,
+                    title: Text(l10n.languageTamil),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            _SectionHeader(l10n.sectionData),
+            ListTile(
+              leading: const Icon(Icons.upload_file),
+              title: Text(l10n.settingsExport),
+              subtitle: Text(l10n.settingsExportHint),
+              onTap: () => _export(context),
+            ),
+            ListTile(
+              leading: Icon(Icons.delete_forever, color: context.appColors.danger),
+              title: Text(
+                l10n.settingsClearData,
+                style: TextStyle(color: context.appColors.danger),
+              ),
+              subtitle: Text(l10n.settingsClearDataHint),
+              onTap: () => _clearData(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _export(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    await sl<DataManagementService>().exportExpensesCsv();
+    messenger.showSnackBar(SnackBar(content: Text(l10n.exportDone)));
+  }
+
+  Future<void> _clearData(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await showConfirmDialog(
+      context,
+      title: l10n.settingsClearData,
+      message: l10n.clearDataConfirm,
+      confirmLabel: l10n.settingsClearData,
+    );
+    if (!ok) return;
+    await sl<DataManagementService>().clearAllData();
+    messenger.showSnackBar(SnackBar(content: Text(l10n.clearDone)));
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader(this.title);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.lg,
+        AppSpacing.sm,
+      ),
+      child: Text(
+        title,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: context.appColors.mutedText,
+              fontWeight: FontWeight.w600,
+            ),
+      ),
+    );
+  }
+}

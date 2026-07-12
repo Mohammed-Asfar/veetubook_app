@@ -1,0 +1,90 @@
+{
+  "@@locale": "en",
+  "appTitle": "veetubook",
+  "@appTitle": {
+    "description": "The application name"
+  },
+  "navLists": "Lists",
+  "navCatalog": "Products",
+  "navExpenses": "Expenses",
+  "navSettings": "Settings",
+
+  "listsTitle": "Grocery Lists",
+  "listsEmpty": "No lists yet. Tap + to create your first grocery list.",
+  "newList": "New list",
+  "listName": "List name",
+  "renameList": "Rename list",
+  "deleteListConfirm": "Delete this list and its items?",
+  "listItemsEmpty": "No items yet. Add products from your catalog or a one-off item.",
+  "addFromCatalog": "Add from catalog",
+  "addAdHocItem": "Add one-off item",
+  "plannedTotal": "Planned",
+  "itemName": "Item name",
+
+  "catalogTitle": "Products",
+  "catalogEmpty": "No products yet. Add products with their usual price to reuse them.",
+  "addProduct": "Add product",
+  "editProduct": "Edit product",
+  "basePrice": "Price",
+  "unit": "Unit",
+  "quantity": "Quantity",
+  "category": "Category",
+  "uncategorized": "Uncategorized",
+  "nameEnglish": "Name (English)",
+  "nameTamil": "Name (Tamil)",
+  "nameRequired": "Enter at least one name (Tamil or English)",
+  "priceForQty": "Price for {qty} {unit}",
+  "@priceForQty": {
+    "placeholders": {
+      "qty": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "deleteProductConfirm": "Delete this product? Past purchases keep their recorded price.",
+
+  "shoppingTitle": "Shopping",
+  "runningTotal": "Total",
+  "markBought": "Bought",
+
+  "expensesTitle": "Expenses",
+  "expensesEmpty": "No expenses yet. Finish a shopping trip to see it here.",
+  "monthlySpend": "Monthly spend",
+  "vsPreviousMonth": "vs previous month",
+  "noPriorData": "No prior month to compare",
+  "soFarThisMonth": "so far this month",
+  "finishTrip": "Finish trip",
+  "finishTripConfirm": "Finish this trip? The total of bought items will be saved as an expense.",
+  "tripFinished": "Trip saved to expenses",
+  "trips": "{count, plural, =1{1 trip} other{{count} trips}}",
+  "@trips": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsCurrency": "Currency",
+  "settingsExport": "Export data (CSV)",
+  "settingsExportHint": "Save a backup of your expenses. Uninstalling the app deletes all data.",
+  "settingsClearData": "Clear all data",
+  "settingsClearDataHint": "Delete all lists, products and expenses. This cannot be undone.",
+  "clearDataConfirm": "Delete ALL data? Export a backup first if you want to keep it. This cannot be undone.",
+  "exportDone": "Exported",
+  "clearDone": "All data cleared",
+  "languageEnglish": "English",
+  "languageTamil": "Tamil",
+  "sectionData": "Data",
+
+  "itemCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "commonSave": "Save",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonConfirm": "Confirm"
+}

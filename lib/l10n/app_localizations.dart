@@ -1,0 +1,500 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_ta.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('ta'),
+  ];
+
+  /// The application name
+  ///
+  /// In en, this message translates to:
+  /// **'veetubook'**
+  String get appTitle;
+
+  /// No description provided for @navLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get navLists;
+
+  /// No description provided for @navCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get navCatalog;
+
+  /// No description provided for @navExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get navExpenses;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @listsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Grocery Lists'**
+  String get listsTitle;
+
+  /// No description provided for @listsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No lists yet. Tap + to create your first grocery list.'**
+  String get listsEmpty;
+
+  /// No description provided for @newList.
+  ///
+  /// In en, this message translates to:
+  /// **'New list'**
+  String get newList;
+
+  /// No description provided for @listName.
+  ///
+  /// In en, this message translates to:
+  /// **'List name'**
+  String get listName;
+
+  /// No description provided for @renameList.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename list'**
+  String get renameList;
+
+  /// No description provided for @deleteListConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this list and its items?'**
+  String get deleteListConfirm;
+
+  /// No description provided for @listItemsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No items yet. Add products from your catalog or a one-off item.'**
+  String get listItemsEmpty;
+
+  /// No description provided for @addFromCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Add from catalog'**
+  String get addFromCatalog;
+
+  /// No description provided for @addAdHocItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one-off item'**
+  String get addAdHocItem;
+
+  /// No description provided for @plannedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned'**
+  String get plannedTotal;
+
+  /// No description provided for @itemName.
+  ///
+  /// In en, this message translates to:
+  /// **'Item name'**
+  String get itemName;
+
+  /// No description provided for @catalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get catalogTitle;
+
+  /// No description provided for @catalogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No products yet. Add products with their usual price to reuse them.'**
+  String get catalogEmpty;
+
+  /// No description provided for @addProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Add product'**
+  String get addProduct;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit product'**
+  String get editProduct;
+
+  /// No description provided for @basePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get basePrice;
+
+  /// No description provided for @unit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get unit;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get category;
+
+  /// No description provided for @uncategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorized'**
+  String get uncategorized;
+
+  /// No description provided for @nameEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (English)'**
+  String get nameEnglish;
+
+  /// No description provided for @nameTamil.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (Tamil)'**
+  String get nameTamil;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter at least one name (Tamil or English)'**
+  String get nameRequired;
+
+  /// No description provided for @priceForQty.
+  ///
+  /// In en, this message translates to:
+  /// **'Price for {qty} {unit}'**
+  String priceForQty(String qty, String unit);
+
+  /// No description provided for @deleteProductConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this product? Past purchases keep their recorded price.'**
+  String get deleteProductConfirm;
+
+  /// No description provided for @shoppingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get shoppingTitle;
+
+  /// No description provided for @runningTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get runningTotal;
+
+  /// No description provided for @markBought.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought'**
+  String get markBought;
+
+  /// No description provided for @expensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expensesTitle;
+
+  /// No description provided for @expensesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses yet. Finish a shopping trip to see it here.'**
+  String get expensesEmpty;
+
+  /// No description provided for @monthlySpend.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly spend'**
+  String get monthlySpend;
+
+  /// No description provided for @vsPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'vs previous month'**
+  String get vsPreviousMonth;
+
+  /// No description provided for @noPriorData.
+  ///
+  /// In en, this message translates to:
+  /// **'No prior month to compare'**
+  String get noPriorData;
+
+  /// No description provided for @soFarThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'so far this month'**
+  String get soFarThisMonth;
+
+  /// No description provided for @finishTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish trip'**
+  String get finishTrip;
+
+  /// No description provided for @finishTripConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish this trip? The total of bought items will be saved as an expense.'**
+  String get finishTripConfirm;
+
+  /// No description provided for @tripFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip saved to expenses'**
+  String get tripFinished;
+
+  /// No description provided for @trips.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 trip} other{{count} trips}}'**
+  String trips(int count);
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get settingsCurrency;
+
+  /// No description provided for @settingsExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export data (CSV)'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a backup of your expenses. Uninstalling the app deletes all data.'**
+  String get settingsExportHint;
+
+  /// No description provided for @settingsClearData.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all data'**
+  String get settingsClearData;
+
+  /// No description provided for @settingsClearDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all lists, products and expenses. This cannot be undone.'**
+  String get settingsClearDataHint;
+
+  /// No description provided for @clearDataConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ALL data? Export a backup first if you want to keep it. This cannot be undone.'**
+  String get clearDataConfirm;
+
+  /// No description provided for @exportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported'**
+  String get exportDone;
+
+  /// No description provided for @clearDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All data cleared'**
+  String get clearDone;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageTamil.
+  ///
+  /// In en, this message translates to:
+  /// **'Tamil'**
+  String get languageTamil;
+
+  /// No description provided for @sectionData.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get sectionData;
+
+  /// No description provided for @itemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No items} =1{1 item} other{{count} items}}'**
+  String itemCount(int count);
+
+  /// No description provided for @commonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commonSave;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
+  /// No description provided for @commonConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get commonConfirm;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'ta'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'ta':
+      return AppLocalizationsTa();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}
