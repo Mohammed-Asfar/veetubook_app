@@ -1,61 +1,47 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/di/service_locator.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../catalog/domain/catalog_repository.dart';
 import '../../expenses/domain/expenses_repository.dart';
+import '../../settings/presentation/settings_cubit.dart';
 import '../domain/entities/grocery_list.dart';
 import '../domain/lists_repository.dart';
 import 'cubit/list_detail_cubit.dart';
 import 'cubit/lists_cubit.dart';
 import 'list_detail_page.dart';
 
-/// The Lists tab body: all grocery lists with create/rename/delete.
-class ListsScreen extends StatelessWidget {
+/// The Lists tab body: all grocery lists with search + create/rename/delete.
+class ListsScreen extends StatefulWidget {
   const ListsScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return BlocBuilder<ListsCubit, ListsState>(
-      builder: (context, state) {
-        if (state.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state.lists.isEmpty) {
-          return EmptyState(
-            icon: Icons.list_alt,
-            message: l10n.listsEmpty,
-            action: FilledButton.icon(
-              onPressed: () => promptCreateList(context),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.newList),
-            ),
-          );
-        }
-        return ListView.separated(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-          itemCount: state.lists.length,
-          separatorBuilder: (_, _) => const Divider(height: 1),
-          itemBuilder: (context, i) => _ListTile(list: state.lists[i]),
-        );
-      },
-    );
-  }
-
-  /// Shows a dialog to name and create a new list, then opens it.
+  /// Create a new list. If auto-naming is on, generates a unique name and opens
+  /// it immediately; otherwise prompts for a name. Both paths are uniqued.
   static Future<void> promptCreateList(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
     final cubit = context.read<ListsCubit>();
-    final title = await _promptForName(context, l10n.newList, l10n.listName);
-    if (title == null || title.isEmpty) return;
-    final id = await cubit.createList(title);
-    if (context.mounted) {
-      _openList(context, GroceryList(id: id, title: title, createdAt: DateTime.now()));
+    final autoName =
+        context.read<SettingsCubit>().state.autoGenerateListNames;
+
+    String? title;
+    if (autoName) {
+      final datePart = DateFormat.MMMd(
+        Localizations.localeOf(context).toString(),
+      ).format(DateTime.now());
+      title = await cubit.suggestName(l10n.listNameBase, datePart);
+    } else {
+      title = await _promptForName(context, l10n.newList, l10n.listName);
     }
+    if (title == null || title.trim().isEmpty) return;
+
+    final created = await cubit.createList(title);
+    if (context.mounted) _openList(context, created);
   }
 
   static void _openList(BuildContext context, GroceryList list) {
@@ -65,6 +51,7 @@ class ListsScreen extends StatelessWidget {
           create: (_) => ListDetailCubit(
             sl<ListsRepository>(),
             sl<ExpensesRepository>(),
+            sl<CatalogRepository>(),
             list.id!,
           ),
           child: ListDetailPage(list: list),
@@ -102,6 +89,104 @@ class ListsScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  State<ListsScreen> createState() => _ListsScreenState();
+}
+
+class _ListsScreenState extends State<ListsScreen> {
+  final _searchController = TextEditingController();
+  Timer? _debounce;
+  String _query = '';
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 250), () {
+      if (mounted) setState(() => _query = value.trim());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return BlocBuilder<ListsCubit, ListsState>(
+      builder: (context, state) {
+        if (state.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.lists.isEmpty) {
+          return EmptyState(
+            icon: Icons.list_alt,
+            message: l10n.listsEmpty,
+            action: FilledButton.icon(
+              onPressed: () => ListsScreen.promptCreateList(context),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.newList),
+            ),
+          );
+        }
+
+        final visible = _query.isEmpty
+            ? state.lists
+            : state.lists
+                .where((l) =>
+                    l.title.toLowerCase().contains(_query.toLowerCase()))
+                .toList();
+
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.sm,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
+              child: TextField(
+                controller: _searchController,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  hintText: l10n.searchLists,
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _query = '');
+                          },
+                        ),
+                ),
+                onChanged: _onSearchChanged,
+              ),
+            ),
+            Expanded(
+              child: visible.isEmpty
+                  ? EmptyState(
+                      icon: Icons.search_off,
+                      message: l10n.listsNoMatch,
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      itemCount: visible.length,
+                      separatorBuilder: (_, _) => const Divider(height: 1),
+                      itemBuilder: (context, i) => _ListTile(list: visible[i]),
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/localization/app_language.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/utils/money.dart';
+import '../../../core/utils/units.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../domain/entities/product.dart';
@@ -32,10 +33,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
   late String _unit;
   int? _categoryId;
 
-  // Preview quantity for the auto-calc demonstration.
-  Decimal _previewQty = Decimal.fromInt(3);
+  // Preview quantity for the auto-calc demonstration. Starts at 1 so the card
+  // reads as a helper example, not a field to fill in.
+  Decimal _previewQty = Decimal.one;
 
-  static const _units = ['kg', 'g', 'litre', 'ml', 'piece', 'bunch', 'unit'];
+  List<String> get _units => Units.all;
 
   @override
   void initState() {
@@ -259,26 +261,36 @@ class _AutoCalcPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final integerOnly = unit == 'piece';
+    final integerOnly = Units.isDiscrete(unit);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Text(
-                l10n.priceForQty(_fmtQty(qty), unit),
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
+            Text(
+              l10n.autoCalcExample,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
-            QuantityStepper(
-              value: qty,
-              integerOnly: integerOnly,
-              min: integerOnly ? Decimal.one : Decimal.zero,
-              onChanged: onQtyChanged,
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.priceForQty(_fmtQty(qty), unit),
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+                QuantityStepper(
+                  value: qty,
+                  integerOnly: integerOnly,
+                  min: integerOnly ? Decimal.one : Decimal.zero,
+                  onChanged: onQtyChanged,
+                ),
+                const SizedBox(width: AppSpacing.md),
+                PriceText(pricePaise),
+              ],
             ),
-            const SizedBox(width: AppSpacing.md),
-            PriceText(pricePaise),
           ],
         ),
       ),

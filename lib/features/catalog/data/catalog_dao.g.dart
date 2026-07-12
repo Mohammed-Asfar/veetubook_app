@@ -6,6 +6,8 @@ part of 'catalog_dao.dart';
 mixin _$CatalogDaoMixin on DatabaseAccessor<AppDatabase> {
   $CategoriesTable get categories => attachedDatabase.categories;
   $ProductsTable get products => attachedDatabase.products;
+  $GroceryListsTable get groceryLists => attachedDatabase.groceryLists;
+  $ListItemsTable get listItems => attachedDatabase.listItems;
   CatalogDaoManager get managers => CatalogDaoManager(this);
 }
 
@@ -16,4 +18,8 @@ class CatalogDaoManager {
       $$CategoriesTableTableManager(_db.attachedDatabase, _db.categories);
   $$ProductsTableTableManager get products =>
       $$ProductsTableTableManager(_db.attachedDatabase, _db.products);
+  $$GroceryListsTableTableManager get groceryLists =>
+      $$GroceryListsTableTableManager(_db.attachedDatabase, _db.groceryLists);
+  $$ListItemsTableTableManager get listItems =>
+      $$ListItemsTableTableManager(_db.attachedDatabase, _db.listItems);
 }

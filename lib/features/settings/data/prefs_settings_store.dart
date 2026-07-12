@@ -11,12 +11,14 @@ class PrefsSettingsStore implements SettingsStore {
 
   static const _kLanguage = 'settings.language';
   static const _kCurrency = 'settings.currency';
+  static const _kAutoGenNames = 'settings.autoGenerateListNames';
 
   @override
   Future<AppSettings> load() async {
     return AppSettings(
       language: AppLanguage.fromCode(_prefs.getString(_kLanguage)),
       currencySymbol: _prefs.getString(_kCurrency) ?? '₹',
+      autoGenerateListNames: _prefs.getBool(_kAutoGenNames) ?? true,
     );
   }
 
@@ -27,4 +29,8 @@ class PrefsSettingsStore implements SettingsStore {
   @override
   Future<void> saveCurrency(String symbol) =>
       _prefs.setString(_kCurrency, symbol);
+
+  @override
+  Future<void> saveAutoGenerateListNames(bool enabled) =>
+      _prefs.setBool(_kAutoGenNames, enabled);
 }

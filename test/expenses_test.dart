@@ -1,5 +1,5 @@
-// Tests the expenses data layer: finishTrip's transactional snapshot of bought
-// items, idempotency, list-completed side effect, and monthly bucketing.
+// Tests the expenses data layer: automatic expense sync from the bought-items
+// total (upsert when > 0, delete when 0), idempotency, and monthly bucketing.
 
 import 'package:decimal/decimal.dart';
 import 'package:drift/native.dart';
@@ -24,9 +24,10 @@ void main() {
 
   tearDown(() async => db.close());
 
-  Future<int> seedTrip() async {
-    final listId = await lists.createList('Trip');
-    // Two items: one bought (₹100), one not (₹50).
+  /// Creates a list with one bought item (₹100) and one unbought (₹50),
+  /// returning (listId, boughtItemId).
+  Future<(int, int)> seedList() async {
+    final listId = (await lists.createList('Trip')).id!;
     final a = await lists.addItem(ListItem(
       listId: listId,
       nameEn: 'Bought',
@@ -39,44 +40,60 @@ void main() {
       qty: Decimal.one,
       unitPricePaise: 5000,
     ));
-    await lists.setBought(a, true);
-    return listId;
+    return (listId, a);
   }
 
-  test('finishTrip snapshots only bought items and marks list completed',
-      () async {
-    final listId = await seedTrip();
-    final expenseId = await expenses.finishTrip(listId);
-    expect(expenseId, isPositive);
+  test('syncing records an expense from only the bought-items total', () async {
+    final (listId, boughtId) = await seedList();
+
+    // Nothing bought yet -> no expense.
+    await expenses.syncExpenseForList(listId);
+    expect(await expenses.watchExpenses().first, isEmpty);
+
+    // Mark the ₹100 item bought -> an expense of ₹100 appears.
+    await lists.setBought(boughtId, true);
+    await expenses.syncExpenseForList(listId);
 
     final rows = await expenses.watchExpenses().first;
     expect(rows.single.totalPaise, 10000); // only the bought ₹100
     expect(rows.single.listTitle, 'Trip');
-
-    // The list is now completed.
-    final list = await lists.getList(listId);
-    expect(list!.status.name, 'completed');
   });
 
-  test('finishTrip is idempotent per list (updates, not duplicates)', () async {
-    final listId = await seedTrip();
-    final first = await expenses.finishTrip(listId);
-    final second = await expenses.finishTrip(listId);
-    expect(first, second); // same expense id
+  test('syncing is idempotent (updates, never duplicates)', () async {
+    final (listId, boughtId) = await seedList();
+    await lists.setBought(boughtId, true);
+
+    await expenses.syncExpenseForList(listId);
+    await expenses.syncExpenseForList(listId);
 
     final rows = await expenses.watchExpenses().first;
     expect(rows.length, 1); // not duplicated
   });
 
-  test('monthly summaries aggregate totals and trip counts', () async {
-    final l1 = await seedTrip();
-    await expenses.finishTrip(l1);
-    final l2 = await seedTrip();
-    await expenses.finishTrip(l2);
+  test('unmarking the last bought item removes the expense', () async {
+    final (listId, boughtId) = await seedList();
+
+    await lists.setBought(boughtId, true);
+    await expenses.syncExpenseForList(listId);
+    expect(await expenses.watchExpenses().first, isNotEmpty);
+
+    // Unbuy everything -> the ₹0 expense is deleted, not left lingering.
+    await lists.setBought(boughtId, false);
+    await expenses.syncExpenseForList(listId);
+    expect(await expenses.watchExpenses().first, isEmpty);
+  });
+
+  test('monthly summaries aggregate totals and counts', () async {
+    final (l1, b1) = await seedList();
+    await lists.setBought(b1, true);
+    await expenses.syncExpenseForList(l1);
+
+    final (l2, b2) = await seedList();
+    await lists.setBought(b2, true);
+    await expenses.syncExpenseForList(l2);
 
     final months = await expenses.watchMonthlySummaries().first;
-    // Both trips are in the current month.
-    expect(months.length, 1);
+    expect(months.length, 1); // both in the current month
     expect(months.single.tripCount, 2);
     expect(months.single.totalPaise, 20000); // ₹100 + ₹100
   });

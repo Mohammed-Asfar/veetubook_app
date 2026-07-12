@@ -7,7 +7,7 @@ part 'catalog_dao.g.dart';
 
 /// Drift data-access object for catalog tables. Returns generated row classes
 /// (`db.Product` / `db.Category`); the repository maps these to domain entities.
-@DriftAccessor(tables: [Products, Categories])
+@DriftAccessor(tables: [Products, Categories, ListItems])
 class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   CatalogDao(super.db);
 
@@ -15,6 +15,23 @@ class CatalogDao extends DatabaseAccessor<AppDatabase> with _$CatalogDaoMixin {
   Stream<List<Product>> watchProducts() {
     return (select(products)..where((p) => p.isDeleted.equals(false)))
         .watch();
+  }
+
+  /// Non-deleted products that have been added to any list, most-recently-added
+  /// first. Recency is derived from MAX(list_items.id) per product (higher id =
+  /// added later). [limit] caps the result.
+  Stream<List<Product>> watchRecentProducts({int limit = 20}) {
+    final lastAdded = listItems.id.max();
+    final query = select(products).join([
+      innerJoin(listItems, listItems.productId.equalsExp(products.id)),
+    ])
+      ..where(products.isDeleted.equals(false))
+      ..groupBy([products.id])
+      ..orderBy([OrderingTerm.desc(lastAdded)])
+      ..limit(limit);
+    return query.watch().map(
+          (rows) => rows.map((r) => r.readTable(products)).toList(),
+        );
   }
 
   Stream<List<Category>> watchCategories() => select(categories).watch();

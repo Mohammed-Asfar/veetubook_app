@@ -13,16 +13,48 @@
   "listsEmpty": "No lists yet. Tap + to create your first grocery list.",
   "newList": "New list",
   "listName": "List name",
+  "listNameBase": "List",
+  "searchLists": "Search lists",
+  "listsNoMatch": "No lists match your search.",
   "renameList": "Rename list",
   "deleteListConfirm": "Delete this list and its items?",
   "listItemsEmpty": "No items yet. Add products from your catalog or a one-off item.",
-  "addFromCatalog": "Add from catalog",
+  "addFromCatalog": "Add items",
   "addAdHocItem": "Add one-off item",
   "plannedTotal": "Planned",
   "itemName": "Item name",
+  "addItem": "Add item",
+  "editItem": "Edit item",
+  "pricePerUnit": "Price per {unit}",
+  "@pricePerUnit": {
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "lineTotal": "Total",
+  "priceUpdatesCatalog": "This price is saved for next time too.",
+  "searchProducts": "Search or add new item",
+  "tabAll": "All",
+  "tabRecent": "Recent",
+  "recentEmpty": "Items you add to lists will show up here.",
+  "createProductNamed": "Create \"{name}\"",
+  "@createProductNamed": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "noProductsFound": "No matching products",
+  "productAlreadyExists": "\"{name}\" is already in your products — tap + to add it",
+  "@productAlreadyExists": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
 
   "catalogTitle": "Products",
   "catalogEmpty": "No products yet. Add products with their usual price to reuse them.",
+  "searchCatalog": "Search products",
+  "catalogNoMatch": "No products match your search.",
   "addProduct": "Add product",
   "editProduct": "Edit product",
   "basePrice": "Price",
@@ -39,6 +71,10 @@
       "qty": { "type": "String" },
       "unit": { "type": "String" }
     }
+  },
+  "autoCalcExample": "Example — auto-calculated when added to a list",
+  "@autoCalcExample": {
+    "description": "Header clarifying the auto-calc preview is just an example, not a saved field"
   },
   "deleteProductConfirm": "Delete this product? Past purchases keep their recorded price.",
 
@@ -67,6 +103,9 @@
   "settingsCurrency": "Currency",
   "settingsExport": "Export data (CSV)",
   "settingsExportHint": "Save a backup of your expenses. Uninstalling the app deletes all data.",
+  "settingsAutoName": "Auto-name new lists",
+  "settingsAutoNameHint": "Create lists with an automatic name. Turn off to be asked for a name each time.",
+  "sectionLists": "Lists",
   "settingsClearData": "Clear all data",
   "settingsClearDataHint": "Delete all lists, products and expenses. This cannot be undone.",
   "clearDataConfirm": "Delete ALL data? Export a backup first if you want to keep it. This cannot be undone.",

@@ -19,6 +19,11 @@ class CatalogRepositoryImpl implements CatalogRepository {
       _dao.watchProducts().map((rows) => rows.map(_toProduct).toList());
 
   @override
+  Stream<List<Product>> watchRecentProducts({int limit = 20}) => _dao
+      .watchRecentProducts(limit: limit)
+      .map((rows) => rows.map(_toProduct).toList());
+
+  @override
   Stream<List<Category>> watchCategories() =>
       _dao.watchCategories().map((rows) => rows.map(_toCategory).toList());
 
@@ -26,6 +31,21 @@ class CatalogRepositoryImpl implements CatalogRepository {
   Future<Product?> getProduct(int id) async {
     final row = await _dao.getProductById(id);
     return row == null ? null : _toProduct(row);
+  }
+
+  @override
+  Future<Product?> findByName(String name) async {
+    final needle = name.trim().toLowerCase();
+    if (needle.isEmpty) return null;
+    // Small catalog: scan the current products and compare case-insensitively.
+    final products = await watchProducts().first;
+    for (final p in products) {
+      if ((p.nameEn ?? '').trim().toLowerCase() == needle ||
+          (p.nameTa ?? '').trim().toLowerCase() == needle) {
+        return p;
+      }
+    }
+    return null;
   }
 
   @override

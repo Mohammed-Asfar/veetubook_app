@@ -37,6 +37,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listName => 'List name';
 
   @override
+  String get listNameBase => 'List';
+
+  @override
+  String get searchLists => 'Search lists';
+
+  @override
+  String get listsNoMatch => 'No lists match your search.';
+
+  @override
   String get renameList => 'Rename list';
 
   @override
@@ -47,7 +56,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No items yet. Add products from your catalog or a one-off item.';
 
   @override
-  String get addFromCatalog => 'Add from catalog';
+  String get addFromCatalog => 'Add items';
 
   @override
   String get addAdHocItem => 'Add one-off item';
@@ -59,11 +68,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itemName => 'Item name';
 
   @override
+  String get addItem => 'Add item';
+
+  @override
+  String get editItem => 'Edit item';
+
+  @override
+  String pricePerUnit(String unit) {
+    return 'Price per $unit';
+  }
+
+  @override
+  String get lineTotal => 'Total';
+
+  @override
+  String get priceUpdatesCatalog => 'This price is saved for next time too.';
+
+  @override
+  String get searchProducts => 'Search or add new item';
+
+  @override
+  String get tabAll => 'All';
+
+  @override
+  String get tabRecent => 'Recent';
+
+  @override
+  String get recentEmpty => 'Items you add to lists will show up here.';
+
+  @override
+  String createProductNamed(String name) {
+    return 'Create \"$name\"';
+  }
+
+  @override
+  String get noProductsFound => 'No matching products';
+
+  @override
+  String productAlreadyExists(String name) {
+    return '\"$name\" is already in your products — tap + to add it';
+  }
+
+  @override
   String get catalogTitle => 'Products';
 
   @override
   String get catalogEmpty =>
       'No products yet. Add products with their usual price to reuse them.';
+
+  @override
+  String get searchCatalog => 'Search products';
+
+  @override
+  String get catalogNoMatch => 'No products match your search.';
 
   @override
   String get addProduct => 'Add product';
@@ -99,6 +156,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String priceForQty(String qty, String unit) {
     return 'Price for $qty $unit';
   }
+
+  @override
+  String get autoCalcExample =>
+      'Example — auto-calculated when added to a list';
 
   @override
   String get deleteProductConfirm =>
@@ -168,6 +229,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsExportHint =>
       'Save a backup of your expenses. Uninstalling the app deletes all data.';
+
+  @override
+  String get settingsAutoName => 'Auto-name new lists';
+
+  @override
+  String get settingsAutoNameHint =>
+      'Create lists with an automatic name. Turn off to be asked for a name each time.';
+
+  @override
+  String get sectionLists => 'Lists';
 
   @override
   String get settingsClearData => 'Clear all data';

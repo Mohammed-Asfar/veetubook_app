@@ -34,4 +34,9 @@ class SettingsCubit extends Cubit<AppSettings> {
     emit(state.copyWith(currencySymbol: symbol));
     await _store.saveCurrency(symbol);
   }
+
+  Future<void> setAutoGenerateListNames(bool enabled) async {
+    emit(state.copyWith(autoGenerateListNames: enabled));
+    await _store.saveAutoGenerateListNames(enabled);
+  }
 }

@@ -24,18 +24,46 @@ class ListsRepositoryImpl implements ListsRepository {
   }
 
   @override
-  Future<int> createList(String title) {
-    return _dao.insertList(
-      db.GroceryListsCompanion.insert(
-        title: title,
-        createdAt: DateTime.now().toUtc(),
-      ),
+  Future<GroceryList> createList(String title) async {
+    final unique = await _uniqueTitle(title);
+    final createdAt = DateTime.now().toUtc();
+    final id = await _dao.insertList(
+      db.GroceryListsCompanion.insert(title: unique, createdAt: createdAt),
     );
+    return GroceryList(id: id, title: unique, createdAt: createdAt);
   }
 
   @override
-  Future<void> renameList(int id, String title) =>
-      _dao.updateListTitle(id, title);
+  Future<void> renameList(int id, String title) async {
+    final unique = await _uniqueTitle(title, exceptId: id);
+    await _dao.updateListTitle(id, unique);
+  }
+
+  @override
+  Future<bool> isNameAvailable(String title, {int? exceptId}) async {
+    final needle = title.trim().toLowerCase();
+    final rows = await _dao.watchLists().first;
+    return !rows.any((l) =>
+        l.id != exceptId && l.title.trim().toLowerCase() == needle);
+  }
+
+  @override
+  Future<String> suggestListName(String baseName, String datePart) async {
+    // Next sequence number = one more than the current list count.
+    final rows = await _dao.watchLists().first;
+    final seq = rows.length + 1;
+    return _uniqueTitle('$baseName $seq - $datePart');
+  }
+
+  /// Returns [title] if free, otherwise appends " (2)", " (3)" … until unique.
+  Future<String> _uniqueTitle(String title, {int? exceptId}) async {
+    final base = title.trim();
+    if (await isNameAvailable(base, exceptId: exceptId)) return base;
+    for (var n = 2;; n++) {
+      final candidate = '$base ($n)';
+      if (await isNameAvailable(candidate, exceptId: exceptId)) return candidate;
+    }
+  }
 
   @override
   Future<void> deleteList(int id) => _dao.deleteListById(id);

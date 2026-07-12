@@ -26,7 +26,8 @@ class ExpensesRepositoryImpl implements ExpensesRepository {
   }
 
   @override
-  Future<int> finishTrip(int listId) => _dao.finishTrip(listId);
+  Future<void> syncExpenseForList(int listId) =>
+      _dao.syncExpenseForList(listId);
 
   @override
   Stream<List<MonthlySummary>> watchMonthlySummaries() {

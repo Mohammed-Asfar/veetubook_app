@@ -23,6 +23,9 @@ class _MemoryStore implements SettingsStore {
   @override
   Future<void> saveCurrency(String symbol) async =>
       _s = _s.copyWith(currencySymbol: symbol);
+  @override
+  Future<void> saveAutoGenerateListNames(bool enabled) async =>
+      _s = _s.copyWith(autoGenerateListNames: enabled);
 }
 
 void main() {

@@ -4,6 +4,8 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/money.dart';
+import '../../../catalog/domain/catalog_repository.dart';
 import '../../../catalog/domain/entities/product.dart';
 import '../../../expenses/domain/expenses_repository.dart';
 import '../../domain/entities/list_item.dart';
@@ -36,7 +38,7 @@ class ListDetailState extends Equatable {
 /// Watches one list's items and exposes item operations, including adding from
 /// a catalog [Product] (snapshotting price/name) or an ad-hoc item.
 class ListDetailCubit extends Cubit<ListDetailState> {
-  ListDetailCubit(this._repo, this._expenses, this.listId)
+  ListDetailCubit(this._repo, this._expenses, this._catalog, this.listId)
       : super(const ListDetailState()) {
     _sub = _repo.watchItems(listId).listen(
           (items) => emit(ListDetailState(loading: false, items: items)),
@@ -45,12 +47,14 @@ class ListDetailCubit extends Cubit<ListDetailState> {
 
   final ListsRepository _repo;
   final ExpensesRepository _expenses;
+  final CatalogRepository _catalog;
   final int listId;
   StreamSubscription<List<ListItem>>? _sub;
 
-  /// Finish this trip: atomically saves the bought-items total as an expense
-  /// and marks the list completed (delegates to the transaction in the repo).
-  Future<void> finishTrip() => _expenses.finishTrip(listId);
+  /// Keep this list's expense record in sync with its bought-items total.
+  /// Called automatically after any change that can affect what's been bought,
+  /// so the list becomes/updates an expense without a manual "finish" step.
+  Future<void> _syncExpense() => _expenses.syncExpenseForList(listId);
 
   /// Add a catalog product to this list, snapshotting its unit price & name.
   Future<void> addFromProduct(Product product, Decimal qty) {
@@ -86,17 +90,80 @@ class ListDetailCubit extends Cubit<ListDetailState> {
   }
 
   /// Change quantity — re-runs auto-calc unless the price was overridden.
-  Future<void> changeQty(ListItem item, Decimal qty) =>
-      _repo.updateItem(item.copyWith(qty: qty));
+  Future<void> changeQty(ListItem item, Decimal qty) async {
+    await _repo.updateItem(item.copyWith(qty: qty));
+    await _syncExpense();
+  }
 
   /// Manually override the line price (turns off auto-calc for this item).
-  Future<void> overridePrice(ListItem item, int linePricePaise) => _repo
-      .updateItem(item.copyWith(linePricePaise: linePricePaise, isPriceOverridden: true));
+  Future<void> overridePrice(ListItem item, int linePricePaise) async {
+    await _repo.updateItem(
+      item.copyWith(linePricePaise: linePricePaise, isPriceOverridden: true),
+    );
+    await _syncExpense();
+  }
 
-  Future<void> setBought(ListItem item, bool bought) =>
-      _repo.setBought(item.id!, bought);
+  Future<void> setBought(ListItem item, bool bought) async {
+    await _repo.setBought(item.id!, bought);
+    await _syncExpense();
+  }
 
-  Future<void> removeItem(ListItem item) => _repo.removeItem(item.id!);
+  /// Full item edit from the list itself (no trip to the catalog): name,
+  /// category, unit, price and quantity. The changes update this list item AND
+  /// are written back to the source catalog product so they're the default next
+  /// time (per the user's choice). [categoryId] is only applied to the product.
+  Future<void> editItem(
+    ListItem item, {
+    required String? nameEn,
+    required String? nameTa,
+    required String unit,
+    required int unitPricePaise,
+    required Decimal qty,
+    int? categoryId,
+  }) async {
+    final linePaise = Money.lineTotalPaise(
+      basePricePaise: unitPricePaise,
+      baseQty: Decimal.one,
+      qty: qty,
+    );
+    await _repo.updateItem(item.copyWith(
+      nameEn: nameEn,
+      nameTa: nameTa,
+      unit: unit,
+      unitPricePaise: unitPricePaise,
+      qty: qty,
+      linePricePaise: linePaise,
+      isPriceOverridden: false,
+    ));
+
+    // Persist name/category/unit/price back to the catalog product.
+    if (item.productId != null) {
+      final product = await _catalog.getProduct(item.productId!);
+      if (product != null) {
+        await _catalog.saveProduct(product.copyWith(
+          nameEn: nameEn,
+          nameTa: nameTa,
+          unit: unit,
+          categoryId: categoryId,
+          basePricePaise: unitPricePaise,
+          baseQty: Decimal.one,
+        ));
+      }
+    }
+
+    await _syncExpense();
+  }
+
+  /// The catalog product backing an item (for pre-filling the editor's
+  /// category), or null for ad-hoc items.
+  Future<Product?> productFor(ListItem item) =>
+      item.productId == null ? Future.value(null) : _catalog.getProduct(item.productId!);
+
+  Future<void> removeItem(ListItem item) async {
+    await _repo.removeItem(item.id!);
+    // A removed item may have been bought, so refresh the expense total.
+    await _syncExpense();
+  }
 
   @override
   Future<void> close() {

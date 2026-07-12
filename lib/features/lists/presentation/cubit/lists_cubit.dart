@@ -30,10 +30,15 @@ class ListsCubit extends Cubit<ListsState> {
   final ListsRepository _repo;
   StreamSubscription<List<GroceryList>>? _sub;
 
-  Future<int> createList(String title) => _repo.createList(title);
+  /// Create a list; returns it with the final (uniqued) title and id.
+  Future<GroceryList> createList(String title) => _repo.createList(title);
   Future<void> renameList(int id, String title) =>
       _repo.renameList(id, title);
   Future<void> deleteList(int id) => _repo.deleteList(id);
+
+  /// A suggested unique auto-generated name (e.g. "List 3 - 11 Jul").
+  Future<String> suggestName(String baseName, String datePart) =>
+      _repo.suggestListName(baseName, datePart);
 
   @override
   Future<void> close() {

@@ -37,6 +37,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get listName => 'பட்டியல் பெயர்';
 
   @override
+  String get listNameBase => 'பட்டியல்';
+
+  @override
+  String get searchLists => 'பட்டியல்களைத் தேடு';
+
+  @override
+  String get listsNoMatch => 'உங்கள் தேடலுக்குப் பொருந்தும் பட்டியல்கள் இல்லை.';
+
+  @override
   String get renameList => 'பட்டியலை மறுபெயரிடு';
 
   @override
@@ -48,7 +57,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'இன்னும் பொருட்கள் இல்லை. உங்கள் பட்டியலிலிருந்து பொருட்களை அல்லது ஒரு தனிப் பொருளைச் சேர்க்கவும்.';
 
   @override
-  String get addFromCatalog => 'பட்டியலிலிருந்து சேர்';
+  String get addFromCatalog => 'பொருட்களைச் சேர்';
 
   @override
   String get addAdHocItem => 'தனிப் பொருள் சேர்';
@@ -60,11 +69,61 @@ class AppLocalizationsTa extends AppLocalizations {
   String get itemName => 'பொருள் பெயர்';
 
   @override
+  String get addItem => 'பொருள் சேர்';
+
+  @override
+  String get editItem => 'பொருளைத் திருத்து';
+
+  @override
+  String pricePerUnit(String unit) {
+    return 'ஒரு $unit விலை';
+  }
+
+  @override
+  String get lineTotal => 'மொத்தம்';
+
+  @override
+  String get priceUpdatesCatalog =>
+      'இந்த விலை அடுத்த முறைக்கும் சேமிக்கப்படும்.';
+
+  @override
+  String get searchProducts => 'தேடு அல்லது புதிய பொருள் சேர்';
+
+  @override
+  String get tabAll => 'அனைத்தும்';
+
+  @override
+  String get tabRecent => 'சமீபத்தியவை';
+
+  @override
+  String get recentEmpty =>
+      'பட்டியல்களில் நீங்கள் சேர்க்கும் பொருட்கள் இங்கே தோன்றும்.';
+
+  @override
+  String createProductNamed(String name) {
+    return '\"$name\" உருவாக்கு';
+  }
+
+  @override
+  String get noProductsFound => 'பொருந்தும் பொருட்கள் இல்லை';
+
+  @override
+  String productAlreadyExists(String name) {
+    return '\"$name\" ஏற்கனவே உங்கள் பொருட்களில் உள்ளது — சேர்க்க + ஐ தட்டவும்';
+  }
+
+  @override
   String get catalogTitle => 'பொருட்கள்';
 
   @override
   String get catalogEmpty =>
       'இன்னும் பொருட்கள் இல்லை. மீண்டும் பயன்படுத்த பொருட்களை அவற்றின் வழக்கமான விலையுடன் சேர்க்கவும்.';
+
+  @override
+  String get searchCatalog => 'பொருட்களைத் தேடு';
+
+  @override
+  String get catalogNoMatch => 'உங்கள் தேடலுக்குப் பொருந்தும் பொருட்கள் இல்லை.';
 
   @override
   String get addProduct => 'பொருள் சேர்';
@@ -101,6 +160,10 @@ class AppLocalizationsTa extends AppLocalizations {
   String priceForQty(String qty, String unit) {
     return '$qty $unit விலை';
   }
+
+  @override
+  String get autoCalcExample =>
+      'எடுத்துக்காட்டு — பட்டியலில் சேர்க்கும்போது தானாகக் கணக்கிடப்படும்';
 
   @override
   String get deleteProductConfirm =>
@@ -170,6 +233,16 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get settingsExportHint =>
       'உங்கள் செலவுகளின் காப்புப்பிரதியைச் சேமிக்கவும். ஆப்பை நீக்கினால் அனைத்து தரவும் நீங்கும்.';
+
+  @override
+  String get settingsAutoName => 'புதிய பட்டியல்களுக்கு தானாகப் பெயரிடு';
+
+  @override
+  String get settingsAutoNameHint =>
+      'தானியங்கு பெயருடன் பட்டியல்களை உருவாக்கு. ஒவ்வொரு முறையும் பெயர் கேட்க இதை அணைக்கவும்.';
+
+  @override
+  String get sectionLists => 'பட்டியல்கள்';
 
   @override
   String get settingsClearData => 'அனைத்து தரவையும் அழி';

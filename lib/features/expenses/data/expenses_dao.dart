@@ -47,23 +47,25 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase>
       (select(expenses)..where((e) => e.listId.equals(listId)))
           .getSingleOrNull();
 
-  /// Atomically mark the list completed and upsert its expense record.
-  /// Returns the expense id.
-  Future<int> finishTrip(int listId) {
+  /// Keep the list's expense record in sync with its bought-items total.
+  ///
+  /// Called automatically whenever items change (bought/qty/price). Runs in a
+  /// transaction so the read-then-write is atomic:
+  /// - bought total > 0  -> upsert an expense with that total (idempotent).
+  /// - bought total == 0 -> delete the expense so ₹0 entries don't linger.
+  Future<void> syncExpenseForList(int listId) {
     return transaction(() async {
       final total = await boughtTotalForList(listId);
       final now = DateTime.now().toUtc();
-
-      // Mark the list completed.
-      await (update(groceryLists)..where((l) => l.id.equals(listId))).write(
-        GroceryListsCompanion(
-          status: const Value('completed'),
-          updatedAt: Value(now),
-        ),
-      );
-
-      // Upsert the expense (idempotent per list).
       final existing = await expenseForList(listId);
+
+      if (total <= 0) {
+        if (existing != null) {
+          await (delete(expenses)..where((e) => e.id.equals(existing.id))).go();
+        }
+        return;
+      }
+
       if (existing != null) {
         await (update(expenses)..where((e) => e.id.equals(existing.id))).write(
           ExpensesCompanion(
@@ -72,16 +74,16 @@ class ExpensesDao extends DatabaseAccessor<AppDatabase>
             updatedAt: Value(now),
           ),
         );
-        return existing.id;
+      } else {
+        await into(expenses).insert(
+          ExpensesCompanion.insert(
+            listId: listId,
+            date: now,
+            totalPaise: Value(total),
+            updatedAt: Value(now),
+          ),
+        );
       }
-      return into(expenses).insert(
-        ExpensesCompanion.insert(
-          listId: listId,
-          date: now,
-          totalPaise: Value(total),
-          updatedAt: Value(now),
-        ),
-      );
     });
   }
 }

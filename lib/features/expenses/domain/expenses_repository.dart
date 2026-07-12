@@ -7,11 +7,10 @@ abstract interface class ExpensesRepository {
   /// joined in for display.
   Stream<List<Expense>> watchExpenses();
 
-  /// Finish a shopping trip: atomically (in one transaction) mark the list
-  /// completed and create/refresh its expense record from the bought-items
-  /// total. Returns the expense id. Idempotent per list (re-finishing updates
-  /// the existing expense rather than duplicating).
-  Future<int> finishTrip(int listId);
+  /// Keep the list's expense in sync with its bought-items total. Called
+  /// automatically as items change: upserts the expense when the bought total
+  /// is > 0, or removes it when the total is 0. Idempotent per list.
+  Future<void> syncExpenseForList(int listId);
 
   /// Monthly totals bucketed by local month, most recent first (for M4).
   Stream<List<MonthlySummary>> watchMonthlySummaries();

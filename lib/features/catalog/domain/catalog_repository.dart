@@ -9,10 +9,18 @@ abstract interface class CatalogRepository {
   /// Reactive stream of non-deleted products, so the UI auto-updates on change.
   Stream<List<Product>> watchProducts();
 
+  /// Non-deleted products recently added to any list, most-recent first.
+  Stream<List<Product>> watchRecentProducts({int limit});
+
   /// Reactive stream of categories.
   Stream<List<Category>> watchCategories();
 
   Future<Product?> getProduct(int id);
+
+  /// Find a non-deleted product whose Tamil or English name matches [name]
+  /// case-insensitively (trimmed). Used to avoid creating duplicate products
+  /// like "milk" and "Milk". Returns null if none.
+  Future<Product?> findByName(String name);
 
   /// Insert or update. Returns the row id. Throws [ArgumentError] if the
   /// product has no name (PRD: at least one name required).

@@ -23,7 +23,7 @@ void main() {
   tearDown(() async => db.close());
 
   test('create, rename and delete a list', () async {
-    final id = await repo.createList('July groceries');
+    final id = (await repo.createList('July groceries')).id!;
     expect((await repo.watchLists().first).single.title, 'July groceries');
 
     await repo.renameList(id, 'Weekly');
@@ -33,9 +33,39 @@ void main() {
     expect(await repo.watchLists().first, isEmpty);
   });
 
+  test('list names are made unique by auto-suffixing (case-insensitive)',
+      () async {
+    final a = await repo.createList('Groceries');
+    final b = await repo.createList('groceries'); // same, different case
+    final c = await repo.createList('Groceries'); // third collision
+
+    expect(a.title, 'Groceries');
+    expect(b.title, 'groceries (2)');
+    expect(c.title, 'Groceries (3)');
+  });
+
+  test('suggestListName returns a unique generated name', () async {
+    final n1 = await repo.suggestListName('List', '11 Jul');
+    expect(n1, 'List 1 - 11 Jul');
+    await repo.createList(n1);
+
+    // Next suggestion advances the sequence and stays unique.
+    final n2 = await repo.suggestListName('List', '11 Jul');
+    expect(n2, 'List 2 - 11 Jul');
+  });
+
+  test('renaming to an existing name is auto-suffixed', () async {
+    await repo.createList('Weekly');
+    final other = await repo.createList('Other');
+
+    await repo.renameList(other.id!, 'Weekly');
+    final renamed = await repo.getList(other.id!);
+    expect(renamed!.title, 'Weekly (2)');
+  });
+
   test('adding a catalog product snapshots price and auto-calcs the line',
       () async {
-    final listId = await repo.createList('Trip');
+    final listId = (await repo.createList('Trip')).id!;
     // Rice ₹50/kg (5000 paise), quantity 3 -> ₹150 (15000 paise).
     // productId is left null here (no catalog row persisted) — this test
     // isolates the price-snapshot/auto-calc behaviour, not the FK.
@@ -61,7 +91,7 @@ void main() {
   });
 
   test('bought total counts only checked items; planned counts all', () async {
-    final listId = await repo.createList('Trip');
+    final listId = (await repo.createList('Trip')).id!;
     final a = await repo.addItem(ListItem(
       listId: listId,
       nameEn: 'A',
@@ -89,7 +119,7 @@ void main() {
   });
 
   test('changing qty re-runs auto-calc unless price overridden', () async {
-    final listId = await repo.createList('Trip');
+    final listId = (await repo.createList('Trip')).id!;
     final id = await repo.addItem(ListItem(
       listId: listId,
       nameEn: 'Oil',

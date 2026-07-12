@@ -45,6 +45,16 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             const Divider(),
+            _SectionHeader(l10n.sectionLists),
+            SwitchListTile(
+              secondary: const Icon(Icons.drive_file_rename_outline),
+              title: Text(l10n.settingsAutoName),
+              subtitle: Text(l10n.settingsAutoNameHint),
+              value: settings.autoGenerateListNames,
+              onChanged: (v) =>
+                  context.read<SettingsCubit>().setAutoGenerateListNames(v),
+            ),
+            const Divider(),
             _SectionHeader(l10n.sectionData),
             ListTile(
               leading: const Icon(Icons.upload_file),

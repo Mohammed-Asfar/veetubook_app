@@ -152,6 +152,24 @@ abstract class AppLocalizations {
   /// **'List name'**
   String get listName;
 
+  /// No description provided for @listNameBase.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get listNameBase;
+
+  /// No description provided for @searchLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Search lists'**
+  String get searchLists;
+
+  /// No description provided for @listsNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No lists match your search.'**
+  String get listsNoMatch;
+
   /// No description provided for @renameList.
   ///
   /// In en, this message translates to:
@@ -173,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @addFromCatalog.
   ///
   /// In en, this message translates to:
-  /// **'Add from catalog'**
+  /// **'Add items'**
   String get addFromCatalog;
 
   /// No description provided for @addAdHocItem.
@@ -194,6 +212,78 @@ abstract class AppLocalizations {
   /// **'Item name'**
   String get itemName;
 
+  /// No description provided for @addItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get addItem;
+
+  /// No description provided for @editItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit item'**
+  String get editItem;
+
+  /// No description provided for @pricePerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per {unit}'**
+  String pricePerUnit(String unit);
+
+  /// No description provided for @lineTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get lineTotal;
+
+  /// No description provided for @priceUpdatesCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'This price is saved for next time too.'**
+  String get priceUpdatesCatalog;
+
+  /// No description provided for @searchProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Search or add new item'**
+  String get searchProducts;
+
+  /// No description provided for @tabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get tabAll;
+
+  /// No description provided for @tabRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get tabRecent;
+
+  /// No description provided for @recentEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Items you add to lists will show up here.'**
+  String get recentEmpty;
+
+  /// No description provided for @createProductNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Create \"{name}\"'**
+  String createProductNamed(String name);
+
+  /// No description provided for @noProductsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching products'**
+  String get noProductsFound;
+
+  /// No description provided for @productAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{name}\" is already in your products — tap + to add it'**
+  String productAlreadyExists(String name);
+
   /// No description provided for @catalogTitle.
   ///
   /// In en, this message translates to:
@@ -205,6 +295,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No products yet. Add products with their usual price to reuse them.'**
   String get catalogEmpty;
+
+  /// No description provided for @searchCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products'**
+  String get searchCatalog;
+
+  /// No description provided for @catalogNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match your search.'**
+  String get catalogNoMatch;
 
   /// No description provided for @addProduct.
   ///
@@ -271,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Price for {qty} {unit}'**
   String priceForQty(String qty, String unit);
+
+  /// Header clarifying the auto-calc preview is just an example, not a saved field
+  ///
+  /// In en, this message translates to:
+  /// **'Example — auto-calculated when added to a list'**
+  String get autoCalcExample;
 
   /// No description provided for @deleteProductConfirm.
   ///
@@ -385,6 +493,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save a backup of your expenses. Uninstalling the app deletes all data.'**
   String get settingsExportHint;
+
+  /// No description provided for @settingsAutoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-name new lists'**
+  String get settingsAutoName;
+
+  /// No description provided for @settingsAutoNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create lists with an automatic name. Turn off to be asked for a name each time.'**
+  String get settingsAutoNameHint;
+
+  /// No description provided for @sectionLists.
+  ///
+  /// In en, this message translates to:
+  /// **'Lists'**
+  String get sectionLists;
 
   /// No description provided for @settingsClearData.
   ///

@@ -4,12 +4,16 @@
 import 'package:decimal/decimal.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:veetubook/core/db/app_database.dart' hide Product, Category;
+import 'package:veetubook/core/db/app_database.dart'
+    hide Product, Category, ListItem;
 import 'package:veetubook/core/utils/money.dart';
 import 'package:veetubook/features/catalog/data/catalog_dao.dart';
 import 'package:veetubook/features/catalog/data/catalog_repository_impl.dart';
 import 'package:veetubook/features/catalog/data/catalog_seed.dart';
 import 'package:veetubook/features/catalog/domain/entities/product.dart';
+import 'package:veetubook/features/lists/data/lists_dao.dart';
+import 'package:veetubook/features/lists/data/lists_repository_impl.dart';
+import 'package:veetubook/features/lists/domain/entities/list_item.dart';
 
 void main() {
   late AppDatabase db;
@@ -68,5 +72,48 @@ void main() {
       qty: Decimal.parse('0.25'),
     );
     expect(quarterKg, 1250); // ₹12.50
+  });
+
+  test('findByName matches case-insensitively (prevents milk/Milk dupes)',
+      () async {
+    await repo.saveProduct(
+      Product(nameEn: 'milk', baseQty: Decimal.one, basePricePaise: 4800),
+    );
+
+    // Same word in different case / with surrounding spaces resolves to the
+    // existing product rather than a new one.
+    expect((await repo.findByName('milk'))?.nameEn, 'milk');
+    expect((await repo.findByName('Milk'))?.nameEn, 'milk');
+    expect((await repo.findByName('  MILK '))?.nameEn, 'milk');
+
+    // A genuinely different name has no match.
+    expect(await repo.findByName('bread'), isNull);
+  });
+
+  test('watchRecentProducts returns products added to lists, most recent first',
+      () async {
+    final lists = ListsRepositoryImpl(ListsDao(db));
+    final rice = await repo.saveProduct(
+      Product(nameEn: 'Rice', baseQty: Decimal.one, basePricePaise: 5000),
+    );
+    final milk = await repo.saveProduct(
+      Product(nameEn: 'Milk', baseQty: Decimal.one, basePricePaise: 4800),
+    );
+    // Oil exists but is never added to a list -> shouldn't appear in Recent.
+    await repo.saveProduct(
+      Product(nameEn: 'Oil', baseQty: Decimal.one, basePricePaise: 12000),
+    );
+
+    final listId = (await lists.createList('Trip')).id!;
+    // Add rice first, then milk (milk is more recent).
+    await lists.addItem(
+      ListItem(listId: listId, productId: rice, qty: Decimal.one),
+    );
+    await lists.addItem(
+      ListItem(listId: listId, productId: milk, qty: Decimal.one),
+    );
+
+    final recent = await repo.watchRecentProducts().first;
+    expect(recent.map((p) => p.nameEn).toList(), ['Milk', 'Rice']);
   });
 }
